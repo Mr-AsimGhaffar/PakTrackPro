@@ -51,6 +51,12 @@ const checkoutSchema = z.object({
 
 type CheckoutFormValues = z.infer<typeof checkoutSchema>;
 
+const apiBaseUrl = (import.meta.env.VITE_API_BASE_URL || "").replace(
+  /\/+$/,
+  "",
+);
+const placeOrderUrl = `${apiBaseUrl}/api/place-order`;
+
 const CheckoutPage = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -114,7 +120,7 @@ const CheckoutPage = () => {
     };
 
     try {
-      const response = await fetch("/api/place-order", {
+      const response = await fetch(placeOrderUrl, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
