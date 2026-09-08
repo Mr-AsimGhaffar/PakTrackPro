@@ -32,7 +32,7 @@ export const productData = {
     description:
       "Experience the next generation of vehicle tracking with our revolutionary SIM-free GPS satellite tracker. No monthly bills, no network dependency – just reliable, accurate tracking anywhere in the world.",
     shortDescription:
-      "Wireless, discreet asset tracker with live visibility and theft protection through a smart mobile interface.",
+      "Wireless, discreet asset tracker with current visibility and theft protection through a smart mobile interface.",
   },
 
   features: [
@@ -56,7 +56,7 @@ export const productData = {
     },
     {
       icon: "MapPin",
-      title: "Accurate Live Location",
+      title: "Accurate current Location",
       description:
         "Real-time tracking with pinpoint accuracy. Know exactly where your vehicle is at any moment.",
     },
