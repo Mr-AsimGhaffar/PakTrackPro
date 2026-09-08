@@ -175,13 +175,12 @@ export const productData = {
       slug: "satellite-gps-tracker-core",
       name: "Pak Track Pro Core",
       description:
-        "Compact SIM-free GPS tracker for personal vehicles with live location, theft alerts, and all-Pakistan coverage.",
+        "Compact SIM-free GPS tracker for personal vehicles, theft alerts, and all-Pakistan coverage.",
       price: 8000,
       image: "/pak-track.jpg",
       specifications: [
         { label: "Connectivity", value: "Satellite (SIM-Free)" },
-        { label: "Live Tracking", value: "Yes" },
-        { label: "Battery", value: "Up to 30 days standby" },
+        { label: "Battery", value: "1 year battery life" },
         { label: "Ideal For", value: "Personal Cars" },
       ],
     },
