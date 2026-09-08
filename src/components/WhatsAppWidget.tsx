@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, MessageCircle } from "lucide-react";
 import { productData } from "@/data/productData";
+import { trackLead } from "@/lib/metaPixel";
 
 const WhatsAppWidget = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -89,6 +90,7 @@ const WhatsAppWidget = () => {
                 href={productData.company.whatsappLink}
                 target="_blank"
                 rel="noopener noreferrer"
+                onClick={() => trackLead("WhatsApp Widget")}
                 className="flex items-center justify-center gap-2 w-full py-3 rounded-xl bg-primary text-primary-foreground font-semibold transition-all duration-300 hover:shadow-lg"
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}

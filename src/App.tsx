@@ -2,7 +2,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
@@ -10,6 +10,7 @@ import ProductDetail from "./pages/ProductDetail";
 import CartPage from "./pages/CartPage";
 import CheckoutPage from "./pages/CheckoutPage";
 import OrderConfirmationPage from "./pages/OrderConfirmationPage";
+import { trackPageView } from "@/lib/metaPixel";
 
 const queryClient = new QueryClient();
 
@@ -23,6 +24,25 @@ const ScrollToTop = () => {
   return null;
 };
 
+const MetaPixelPageView = () => {
+  const { pathname, search } = useLocation();
+  const isFirstRender = useRef(true);
+
+  useEffect(() => {
+    // The base pixel in index.html already fired PageView for the initial
+    // document load. React Router navigations never reload the document, so
+    // every later route change has to report its own PageView.
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+
+    trackPageView();
+  }, [pathname, search]);
+
+  return null;
+};
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
@@ -30,6 +50,7 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <ScrollToTop />
+        <MetaPixelPageView />
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/products/:slug" element={<ProductDetail />} />

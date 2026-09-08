@@ -1,11 +1,12 @@
-import { useMemo, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { useEffect, useMemo, useState } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { Minus, Plus, ShoppingCart } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { formatPrice, getProductBySlug } from "@/data/productData";
 import { useCart } from "@/context/CartContext";
 import { useToast } from "@/hooks/use-toast";
+import { trackAddToCart, trackViewContent } from "@/lib/metaPixel";
 
 const ProductDetail = () => {
   const { slug = "" } = useParams();
@@ -13,6 +14,12 @@ const ProductDetail = () => {
   const [quantity, setQuantity] = useState(1);
   const { addToCart } = useCart();
   const { toast } = useToast();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!product) return;
+    trackViewContent(product);
+  }, [product]);
 
   if (!product) {
     return (
@@ -109,10 +116,12 @@ const ProductDetail = () => {
                 className="btn-primary inline-flex items-center gap-2"
                 onClick={() => {
                   addToCart(product, quantity);
+                  trackAddToCart(product, quantity);
                   toast({
                     title: "Added to cart",
                     description: `${product.name} x${quantity} has been added to your cart.`,
                   });
+                  navigate("/cart");
                 }}
               >
                 <ShoppingCart className="w-4 h-4" />

@@ -1,4 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import type { ReactNode } from "react";
@@ -8,6 +9,7 @@ import Footer from "@/components/Footer";
 import { formatPrice, SHIPPING_COST_PKR } from "@/data/productData";
 import { useCart } from "@/context/CartContext";
 import { useToast } from "@/hooks/use-toast";
+import { trackInitiateCheckout, trackPurchase } from "@/lib/metaPixel";
 
 type PlaceOrderPayload = {
   customer: {
@@ -63,6 +65,21 @@ const CheckoutPage = () => {
   const { items, subtotal, clearCart } = useCart();
   const shippingCost = items.length > 0 ? SHIPPING_COST_PKR : 0;
   const totalAmount = subtotal + shippingCost;
+
+  // Report InitiateCheckout once per visit to this page, not on every cart edit.
+  const hasTrackedCheckout = useRef(false);
+  useEffect(() => {
+    if (hasTrackedCheckout.current || items.length === 0) return;
+    hasTrackedCheckout.current = true;
+    trackInitiateCheckout(
+      items.map((item) => ({
+        id: item.product.id,
+        quantity: item.quantity,
+        price: item.product.price,
+      })),
+      totalAmount,
+    );
+  }, [items, totalAmount]);
 
   const {
     register,
@@ -149,6 +166,17 @@ const CheckoutPage = () => {
       });
       return;
     }
+
+    // Fired here rather than on the confirmation page so a refresh or a
+    // shared link can never report the same purchase twice.
+    trackPurchase(
+      payload.items.map((item) => ({
+        id: item.productId,
+        quantity: item.quantity,
+        price: item.price,
+      })),
+      totalAmount,
+    );
 
     clearCart();
     navigate("/order-confirmation", {
